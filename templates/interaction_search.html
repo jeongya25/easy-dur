@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Easy DUR</title>
+
+        <!-- Required meta tags -->
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+              integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+                integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+                crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+                integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+                crossorigin="anonymous"></script>
+
+        <!-- 구글 폰트 링크-->
+        <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+
+
+        <style>
+            *{
+                font-family: 'Jua', sans-serif;
+            }
+
+            .back-to-main{
+                font-size: 5px;
+                margin: auto auto 100px auto;
+            }
+
+            .form-control{
+                border-width: 2px;
+                border-color: black;
+                margin: 35px auto auto auto;
+            }
+
+            /*인풋 박스 포커스 색상 변경*/
+            .form-control:focus {
+                border-color: black;
+                box-shadow: inset 0 1px 1px black, 0 0 3px black;
+            }
+
+            /*버튼 가운데 정렬*/
+            .text-center{
+                margin: 20px auto auto auto;
+            }
+
+            .btn {
+                width:100px;
+                padding:5px;
+                margin: 10px auto auto auto;
+                border-width: 2px;
+                border-radius: 7px;
+                background-color: black;
+            }
+
+            .warning {
+                margin-top: 50px;
+            }
+
+            .wrap {
+                width: 650px;
+                margin: 50px auto 100px auto;
+            }
+        </style>
+
+        <script>
+            function showResult(){
+                let drug_01 = $('#drug-01').val();
+                let drug_02 = $('#drug-02').val();
+
+                if(drug_01 == '' || drug_02 ==''){
+                    alert("성분명을 모두 입력해주세요.")
+                    return;
+                }
+
+                $.ajax({
+                    type: "GET",
+                    url: `/interaction?drug_name_01=${drug_01}&drug_name_02=${drug_02}`,
+                    data: {},
+                    success: function (response) {
+                        //console.log(response)
+                        if (response['result'] == 'success') {
+                            if (response['interaction']){ // True -> 병용금기 리스트에 있다
+                                alert('병용 금기 약물들입니다!'+'\n'+'\n'+`※ 금기내용: ${response['prohbt_content']}`);
+                            }
+                            else{
+                                alert('병용 금기 약물이 아닙니다.'+'\n'+'단, 복용 전에 반드시 약사님께 문의하세요!')
+                            }
+                        }
+                    }
+                })
+
+
+
+            }
+
+        </script>
+    </head>
+
+    <body>
+        <div class="wrap">
+            <div class="back-to-main">
+                <h5>메인으로</h5>
+                <img onclick="location.href='index.html'" style="cursor: pointer;" src="data:image/png;base64,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" width=30 height=30 />
+            </div>
+
+            <div class = "title">
+                <h1>이 약들 같이 먹어도 될까?</h1>
+                <p>
+                    같이 복용하고 싶은 두 약의 성분명을 한글로 입력하시면 병용 가능/금기 여부를 확인할 수 있어요.
+                     <br> <span style = "text-decoration: underline;" >성분명을 정확히 입력해주세요.</span> ex. 파록세틴, 셀레길린(O) 파록새틴, 셀레길린(X)
+                </p>
+            </div>
+
+            <div class = "search-box">
+                <form>
+                    <div class="form-row">
+                        <div class="col">
+                            <input id = "drug-01" type="text" class="form-control" placeholder="성분1(한글)">
+                        </div>
+                        <div class="col">
+                            <input id = "drug-02"  type="text" class="form-control" placeholder="성분2(한글)">
+                        </div>
+                    </div>
+                </form>
+
+                <!-- 버튼-->
+                <div class="text-center">
+                    <button onclick="showResult()" type="button" class="btn btn-dark">결과 확인 !</button>
+                </div>
+            </div>
+
+            <div class = "warning">
+                <p>
+                    <span style = "color: red;">※ 본 결과는 참고용으로만 활용하시고, 복용 전에 <span style = "text-decoration: underline">반드시</span> 약사님께 복약 상담을 받고 복용하세요!</span>
+                    <br>※ 부주의한 복용으로 인한 피해의 모든 법적 책임은 이용자 본인에게 있습니다.
+                </p>
+            </div>
+
+
+
+        </div>
+    </body>
+
+</html>
